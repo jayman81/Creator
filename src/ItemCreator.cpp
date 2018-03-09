@@ -204,23 +204,23 @@ uint8_t createWeapon(){
 		<< " "
 		<< ::util::bytes_to_hex(_name)
 		<< " "
-		<< _dmg
+		<< ::util::uint16_to_hex(_dmg)
 		<< " "
-		<< _weight
+		<< ::util::uint16_to_hex(_weight)
 		<< " "
-		<< _speed
+		<< ::util::uint8_to_hex(_speed)
 		<< " "
-		<< _hands
+		<< ::util::uint8_to_hex(_hands)
 		<< " "
-		<< _range;
+		<< ::util::uint8_to_hex(_range);
 
 	fWHandler.open("weapons", std::ios_base::app);
 	fWHandler << _ss.str();
 	fWHandler.close();
 
 	cout << _numberOfLines
-		 << " " << _type
-		 << " " << _subType
+		 << " " << ::util::uint8_to_hex(_type)
+		 << " " << ::util::uint8_to_hex(_subType)
 		 << " " << _name.size()
 		 << " " << ::util::bytes_to_hex(_name)
 		 << " " << ::util::uint16_to_hex(_dmg)
