@@ -65,6 +65,10 @@ void rtrim(std::string *s);
 
 void trim(std::string *s);
 
+std::string hex_to_string(const std::string& input);
+
+std::string string_to_hex(const std::string& input);
+
 } // namespace util
 
 
