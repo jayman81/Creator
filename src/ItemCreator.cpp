@@ -138,30 +138,26 @@ uint8_t createWeapon(){
 	uint16_t _dmg, _weight, _nameLength;
 	uint8_t _type, _subType, _hands, _range, _fileChoice ;
 	float _speed;
-	string _name, readBuf;
+	string _name, readBuf, _retVal;
 	stringstream _ss;
 	ifstream fRHandler;
 	ofstream fWHandler;
 
-
 	cout << "Type: (Melee(0), Ranged(1), Wand(2), Mage(3))";
 	cin >> _type;
-	cin.clear();
-	fflush(stdin);
 
 	switch (_type) {
-	case 0:
+	case '0':
 		cout << "SubType: (1H-Sword(0), 2H-Sword(1), 1H-Axe(2), 2H-Axe(3), Knife(4), Stick(5))";
 		cin >>  _subType;
-		cin.clear();
-		fflush(stdin);
 		cout << "Hands: (0=1H, 1=2H)";
+		cin >> _hands;
 		break;
-	case 1:
+	case '1':
 		cout << "SubType: (Bow(0), CrossBow(1), Throwing Knife(2))";
 		cin >> _subType;
-		cout << "2 handed!";
-		_hands = 1;
+		cout << "2 handed!" << endl;
+		_hands = '1';
 		break;
 	default:
 		break;
@@ -175,60 +171,78 @@ uint8_t createWeapon(){
 	cin >> _weight;
 	cout << "Speed: (float xx.2)";
 	cin >> _speed;
-
 	cout << "Range: (0-254)";
 	cin >> _range;
-
 	cout << "Write to File? (1/0)";
 	cin >> _fileChoice;
-	if (_fileChoice == 0)
+	if (_fileChoice == '0')
 		return 0;
 	fRHandler.open("weapons");
+	if (fRHandler.fail()){
+		cout << "Error while reading file!" << endl;
+		EXIT_FAILURE;
+	}
+
 	while (getline(fRHandler,readBuf)) {
 		++_numberOfLines;
 	}
 	fRHandler.close();
-	cout << "Found " << _numberOfLines << " Weapons" << endl;
+	cout << "Found " << _numberOfLines << " Weapons in File." << endl;
 
-	_nameLength = _name.size();
+
 
 	_numberOfLines++;
+	_retVal = (::util::string_to_hex(_name));
+	_nameLength = _retVal.size();
+
 	_ss.str("");
-	_ss << _numberOfLines
+	_ss << std::hex <<_numberOfLines
 		<< " "
-		<< ::util::uint8_to_hex(_type)
+		<< std::hex << _type
 		<< " "
-		<< ::util::uint8_to_hex(_subType)
+		<< std::hex << _subType
 		<< " "
-		<< ::util::uint16_to_hex(_nameLength)
+		<< std::hex << _nameLength
 		<< " "
-		<< ::util::bytes_to_hex(_name)
+		<< _retVal
 		<< " "
-		<< ::util::uint16_to_hex(_dmg)
+		<< std::hex << _dmg
 		<< " "
-		<< ::util::uint16_to_hex(_weight)
+		<< std::hex << _weight
 		<< " "
-		<< ::util::uint8_to_hex(_speed)
+		<< std::hex << _speed
 		<< " "
-		<< ::util::uint8_to_hex(_hands)
+		<< std::hex << _hands
 		<< " "
-		<< ::util::uint8_to_hex(_range);
+		<< std::hex << _range;
+	cout << "stringstream: " << _ss.str() << endl;
 
-	fWHandler.open("weapons", std::ios_base::app);
-	fWHandler << _ss.str();
-	fWHandler.close();
+	fWHandler.open("weapons", ios::app);
+	if(!fWHandler.is_open()) {
+			cout << "Error while write to weapons-File!" << endl;
+			EXIT_FAILURE;
+	} else {
+		cout << "File opend successfully! Writing...";
+		fWHandler << _ss.str();
+		fWHandler << "\n";
+		fWHandler.close();
+		cout << "Done" << endl;
 
-	cout << _numberOfLines
-		 << " " << ::util::uint8_to_hex(_type)
-		 << " " << ::util::uint8_to_hex(_subType)
-		 << " " << _name.size()
-		 << " " << ::util::bytes_to_hex(_name)
-		 << " " << ::util::uint16_to_hex(_dmg)
-		 << " " << ::util::uint16_to_hex(_weight)
-		 << " " << _speed
-		 << " " << ::util::uint8_to_hex(_hands)
-		 << " " << ::util::uint8_to_hex(_range)
-		 << endl;
+	}
+
+
+/*
+ * 	cout << "Lines: " <<_numberOfLines << endl;
+	cout << "Type: " << _type << endl;
+	cout << "SubType:  " << _subType << endl;
+	cout << "NameLength: " << _name.size() << endl;
+	cout << "Name: " << _name << endl;
+	cout << "Dmg: " << _dmg << endl;
+	cout << "Weight: " << _weight << endl;
+	cout << "Speed: " << _speed << endl;
+	cout << "Hands: " << _hands << endl;
+	cout << "Range: " << _range << endl;
+*/
 
 	return 1;
 
