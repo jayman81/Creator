@@ -6,56 +6,89 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+
+//#include <SFML/Graphics.hpp>
 #include <iostream>
-#include <vector>
-#include <fstream>
 #include <iomanip>
 #include <stdlib.h> // clearScreen
 
 #include "main.hpp"
+#include "Util.h"
 #include "creatorClass.hpp"
 #include "coutScreens.hpp"
-#include "Util.h"
+#include "itemClass.hpp"
 
 using namespace std;
 
 int main() {
-	int _ok, _ret;
+/*	sf::RenderWindow window(sf::VideoMode(640, 480), "Item Creator");
+	sf::CircleShape shape(100.f);
+	shape.setFillColor(sf::Color::Black);
 
-	cCreator creator;
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+*/
+		cCreator creator;
 
-	while(!creator.getRunning()) {
-		creator.run();
+		while (creator.getRunning()) { // wenn getRunnung == False => Quit
+			creator.run();
+		}
 
+		if (shutdown()) {
+			cout << "done.  Bye" << endl;
+		} else {
+			cout << "error while shutting down!" << endl;
+		}
+
+/*
+		window.clear();
+		window.draw(shape);
+		window.display();
+	}
+*/
+
+
+
+
+
+		/*
+		 * solange running == True ist wird
+		 * 1: DB initialisieren
+		 * 2: Menu anzeigen
+		 * 2.1: waren auf Auswahl
+		 * 2.2: wenn aus Wahl == 0, dann Quit
+		 *
+		 *
+		 */
+
+/*
 		switch (creator.getChoice()) {
 		case (cCreator::Choice::WEAPON):
 			creator.setRunning(true);
-			cout << "Weapon selecetd, ok(1/0)?" << endl;
-			cin >> _ok;
-			creator.setSelectValue(_ok);
-			cin.clear();
 
-			fflush(stdin);
-			if (_ok == 1)
-				_ret = createWeapon();
-				if (_ret == 0) {
-					cout << "Creating Item aborted! Again?" << endl;
-					//cin >> choice;
-					cin.clear();
-					fflush(stdin);
-				} else {
-					cout << "Creating Item successful! Again?" << endl;
-					//cin >> choice;
-					cin.clear();
-					fflush(stdin);
-				}
-//				if (choice == 1) {
-//					creator.setSelect(false);
-//				} else {
-//					creator.setSelect(true);
-//				}
-
-
+			_retVal = item.createWeapon();
+			if (_retVal == 0) { //_ret = createWeapon();
+				cout << "Creating Item aborted!" << endl;
+				printRetry();
+				cin >> _selection;
+				creator.setNext(_selection);
+			} else {
+				cout << "Creating Item successful!" << endl;
+				printRetry();
+				cin >> _selection;
+				creator.setNext(_selection);
+			}
+			if (creator.getNext()) {
+				creator.setRunning(true);
+				creator.setNext(true);
+			} else {
+				creator.setRunning(false);
+				creator.setNext(false);
+			}
 			break;
 		case (cCreator::Choice::ARMOR):
 			creator.setRunning(true);
@@ -82,162 +115,59 @@ int main() {
 		}
 
 	}
-
-
-
-
-
+*/
 
 	return 0;
 }
 
-/*
-	uint16_t _id;
-	uint8_t _type;
-	uint8_t _subType;
-	std::string _name;
-	uint16_t _dmg;
-	uint16_t _weight;
-	float _speed;
-	uint8_t _hands;
-	uint8_t _ranged;
- *
- *SubType
--	sword1H = 0x00,
--	sword2H,
--	axe1H,
--	axe2H,
--	knife,
--	stick,
--	staff
--} meleeWeapon_t;
--
-Type
--	melee = 0x00,
--	range,
--	wand,
--	mage
--}weaponType_t;
- */
-
-
-uint8_t createWeapon(){
-
-	int _numberOfLines=0;
-	uint16_t _dmg, _weight, _nameLength;
-	uint8_t _type, _subType, _hands, _range, _fileChoice ;
-	float _speed;
-	string _name, readBuf;
-	stringstream _ss;
-	ifstream fRHandler;
-	ofstream fWHandler;
-
-
-	printWeaponType();
-	cin >> _type;
-	cin.clear();
-	fflush(stdin);
-
-	switch (_type) {
-	case 0:
-		printWeaponSubType();
-		cin >>  _subType;
-		cin.clear();
-		fflush(stdin);
-		cout << "Hands: (0=1H, 1=2H)";
-		break;
-	case 1:
-		cout << "SubType: (Bow(0), CrossBow(1), Throwing Knife(2))";
-		cin >> _subType;
-		cout << "2 handed!";
-		_hands = 1;
-		break;
-	default:
-		break;
-	}
-
-	cout << "Name: ";
-	cin >> _name;
-	cout << "Dmg: (0-65k)";
-	cin >> _dmg;
-	cout << "Weight: (0-65k)";
-	cin >> _weight;
-	cout << "Speed: (float xx.2)";
-	cin >> _speed;
-
-	cout << "Range: (0-254)";
-	cin >> _range;
-
-	cout << "Write to File? (1/0)";
-	cin >> _fileChoice;
-	if (_fileChoice == 0)
-		return 0;
-	fRHandler.open("weapons");
-	while (getline(fRHandler,readBuf)) {
-		++_numberOfLines;
-	}
-	fRHandler.close();
-	cout << "Found " << _numberOfLines << " Weapons" << endl;
-
-	_nameLength = _name.size();
-
-	_numberOfLines++;
-	_ss.str("");
-	_ss << _numberOfLines
-		<< " "
-		<< ::util::uint8_to_hex(_type)
-		<< " "
-		<< ::util::uint8_to_hex(_subType)
-		<< " "
-		<< ::util::uint16_to_hex(_nameLength)
-		<< " "
-		<< ::util::bytes_to_hex(_name)
-		<< " "
-		<< ::util::uint16_to_hex(_dmg)
-		<< " "
-		<< ::util::uint16_to_hex(_weight)
-		<< " "
-		<< ::util::uint8_to_hex(_speed)
-		<< " "
-		<< ::util::uint8_to_hex(_hands)
-		<< " "
-		<< ::util::uint8_to_hex(_range);
-
-	fWHandler.open("weapons", std::ios_base::app);
-	fWHandler << _ss.str();
-	fWHandler.close();
-
-	cout << _numberOfLines
-		 << " " << ::util::uint8_to_hex(_type)
-		 << " " << ::util::uint8_to_hex(_subType)
-		 << " " << _name.size()
-		 << " " << ::util::bytes_to_hex(_name)
-		 << " " << ::util::uint16_to_hex(_dmg)
-		 << " " << ::util::uint16_to_hex(_weight)
-		 << " " << _speed
-		 << " " << ::util::uint8_to_hex(_hands)
-		 << " " << ::util::uint8_to_hex(_range)
-		 << endl;
-
-	return 1;
-
+bool shutdown() {
+	cout << "exiting..." << endl;
+	cout << "Closing File-Handler..." << endl;
+	cout << "Closing DB-Handler..." << endl;
+	return true;
 }
 
-void createArmor(){
+/*
+ uint16_t _id;
+ uint8_t _type;
+ uint8_t _subType;
+ std::string _name;
+ uint16_t _dmg;
+ uint16_t _weight;
+ float _speed;
+ uint8_t _hands;
+ uint8_t _ranged;
+ *
+ *SubType
+ -	sword1H = 0x00,
+ -	sword2H,
+ -	axe1H,
+ -	axe2H,
+ -	knife,
+ -	stick,
+ -	staff
+ -} meleeWeapon_t;
+ -
+ Type
+ -	melee = 0x00,
+ -	range,
+ -	wand,
+ -	mage
+ -}weaponType_t;
+ */
+
+void createArmor() {
 	cout << "Armor selecetd" << endl;
 }
 
-
-void createShield(){
+void createShield() {
 	cout << "Shield selecetd" << endl;
 }
 
-
-void createPotion(){
+void createPotion() {
 	cout << "Potion selecetd" << endl;
 }
 
-
-void createOther(){
+void createOther() {
 	cout << "Other selecetd" << endl;
 }

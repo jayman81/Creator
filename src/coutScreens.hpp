@@ -11,6 +11,11 @@
 
 void printMainMenu();
 void printWeaponType();
-void printWeaponSubType();
+void printWeaponOneHand();
+void printWeaponTwoHand();
+void printWeaponRanged();
+void printArmorType();
+void printArmorSlot();
+void printRetry();
 
 #endif /* COUTSCREENS_HPP_ */

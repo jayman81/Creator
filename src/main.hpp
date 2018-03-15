@@ -9,13 +9,13 @@
 #define MAIN_HPP_
 
 
-uint8_t createWeapon();
+
 void createArmor();
 void createShield();
 void createPotion();
 void createOther();
 
 
-
+bool shutdown();
 
 #endif /* MAIN_HPP_ */
