@@ -91,6 +91,8 @@ void cCreator::_menu() {
 
 void cCreator::_create() {
 	int selection;
+	cItem ItemObject;
+
 	switch (cCreator::getChoice()) {
 	case cCreator::Choice::WEAPON:
 		//cCreator::setChoice(cCreator::Choice::WEAPON);
@@ -125,79 +127,59 @@ void cCreator::_create() {
 	if (selection == 0) { // if going back
 		_state = MENU;
 	} else {
+		switch (cCreator::getChoice()) {
+		case cCreator::Choice::WEAPON:
+			ItemObject.setSubChoiceWpn((cItem::weapon) selection);
+			break;
+		case cCreator::Choice::ARMOR:
+			ItemObject.setSubChoiceArmr((cItem::ArmorTypes) selection);
+			break;
+		case cCreator::Choice::JEWELR:
+			ItemObject.setSubChoiceJewl((cItem::Jewelry) selection);
+			break;
+		case cCreator::Choice::POTION:
+			//cCreator::setChoice(cCreator::Choice::POTION);
+			std::cout << "WIP" << std::endl;
+			_state = MENU; // only while WIP
+			break;
+		case cCreator::Choice::OTHER:
+			//cCreator::setChoice(cCreator::Choice::OTHER);
+			std::cout << "WIP" << std::endl;
+			_state = MENU; // only while WIP
+			break;
+		case cCreator::Choice::BACK:
+			_state = MENU;
+			break;
+		}
 		_state = CHOOSETYPE;
 	}
 }
 
 void cCreator::_choosetype() {
 	int selection;
-	switch (cCreator::getChoice()) { // Vorselectierung Obergruppe
-	case cCreator::Choice::WEAPON:
-		if (selection == 0) {
-			_state = CREATE;
-			break;
-		} else if (selection == 1) {
-			printWeaponOneHand();
-			std::cout << "Select: ";
-			std::cin >> selection;
-
-			if (selection == 0) { // if going back
-				_state = MENU;
-			} else {
-				cItem::setItemStates(cCreator::getChoice(), selection);
-
-			}
-		} else if (selection == 2) {
-			printWeaponTwoHand();
-			std::cout << "Select: ";
-			std::cin >> selection;
-		} else if (selection == 3) {
-			printWeaponRanged();
-			std::cout << "Select: ";
-			std::cin >> selection;
-		}
-		break;
-	case cCreator::Choice::ARMOR:
-		std::cout << "Select: ";
-		std::cin >> selection;
-		if (selection == 0) {
-			_state = CREATE;
-		} else {
-
-		}
-		break;
-	case cCreator::Choice::JEWELR:
-		std::cout << "Select: ";
-		std::cin >> selection;
-		if (selection == 0) {
-			_state = CREATE;
-		} else {
-
-		}
-		break;
-	case cCreator::Choice::POTION:
-		std::cout << "Select: ";
-		std::cin >> selection;
-		if (selection == 0) {
-			_state = CREATE;
-		} else {
-
-		}
-		break;
-	case cCreator::Choice::OTHER:
-		std::cout << "Select: ";
-		std::cin >> selection;
-		if (selection == 0) {
-			_state = CREATE;
-		} else {
-
-		}
-		break;
-	case cCreator::Choice::BACK:
-		_state = MENU;
-		break;
+	cItem itemObject;
+	if ((cCreator::getChoice() == cCreator::Choice::WEAPON)
+			&& (itemObject.getSubChoiceWpn() == cItem::weapon::ONEHANDED)) {
+		printWeaponOneHand();
+	} else if ((cCreator::getChoice() == cCreator::Choice::WEAPON)
+			&& (itemObject.getSubChoiceWpn() == cItem::weapon::TWOHANDED)) {
+		printWeaponTwoHand();
+	} else if ((cCreator::getChoice() == cCreator::Choice::WEAPON)
+			&& (itemObject.getSubChoiceWpn() == cItem::weapon::RANGED)) {
+		printWeaponRanged();
+	} else if (cCreator::getChoice() == cCreator::Choice::ARMOR) {
+		printArmorSlot();
+	} else if (cCreator::getChoice() == cCreator::Choice::JEWELR) {
+		printJewelrySlot();
 	}
 
-	_state = WRITE;
+	std::cout << "Select: ";
+	std::cin >> selection;
+
+	if (selection == 0) { // if going back
+		_state = MENU;
+	}
+
+	//_state = WRITE;
 
 }

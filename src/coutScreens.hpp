@@ -17,5 +17,6 @@ void printWeaponRanged();
 void printArmorType();
 void printArmorSlot();
 void printRetry();
+void printJewelrySlot();
 
 #endif /* COUTSCREENS_HPP_ */

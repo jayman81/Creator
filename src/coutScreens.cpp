@@ -87,6 +87,15 @@ void printArmorSlot() {
 	std::cout << "\t0. Back" << std::endl;
 }
 
+void printJewelrySlot() {
+	std::cout << "Jewelry Slot" << std::endl;
+	std::cout << std::endl;
+	std::cout << "\t1. Ring" << std::endl;
+	std::cout << "\t2. Armulet" << std::endl;
+	std::cout << "\t3. Trinket" << std::endl;
+	std::cout << "\t0. Back" << std::endl;
+}
+
 void printRetry() {
 	std::cout << "Retry? 1 = Yes, 0 = No" << std::endl;
 }
